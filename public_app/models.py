@@ -18,7 +18,7 @@ class School(TenantMixin):
         is_new = not self.pk
         super().save(*args, **kwargs)
 
-        if is_new:
+        if is_new and self.name !="Public":
             self.create_tenant_admin()
 
     def create_tenant_admin(self):
