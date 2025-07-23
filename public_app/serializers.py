@@ -1,6 +1,6 @@
 from rest_framework import serializers, generics
 
-from public_app.models import School, Domain
+from public_app.models import School, Domain, TenantUser
 
 
 class SchoolSerializer(serializers.ModelSerializer):
