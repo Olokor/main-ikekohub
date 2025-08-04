@@ -1,6 +1,6 @@
 from rest_framework import generics,status
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
 from admin_app.permission import IsSchoolAdmin
 from admin_app.serializer import AdminProfileSerializer
 from student_app.serializers import StudentProfileCreateSerializer
@@ -37,3 +37,39 @@ class CreateStudentView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         student_data = serializer.save()
         return Response(student_data, status=status.HTTP_201_CREATED)
+
+
+class CreateBulkStudent(APIView):
+    permission_classes = [IsSchoolAdmin]
+
+    def post(self, request, *args, **kwargs):
+        # Expecting a list of student objects in JSON array format
+        students_data = request.data
+
+        if not isinstance(students_data, list):
+            return Response(
+                {"error": "Expected a list of student objects."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        results = []
+        errors = []
+
+        for index, student_data in enumerate(students_data):
+            serializer = StudentProfileCreateSerializer(data=student_data)
+            if serializer.is_valid():
+                student_result = serializer.save()
+                results.append(student_result)
+            else:
+                errors.append({
+                    "index": index,
+                    "errors": serializer.errors,
+                    "data": student_data.get("username", None)
+                })
+
+        response = {"successfully_created": results}
+
+        if errors:
+            response["errors"] = errors
+
+        return Response(response, status=status.HTTP_207_MULTI_STATUS if errors else status.HTTP_201_CREATED)
