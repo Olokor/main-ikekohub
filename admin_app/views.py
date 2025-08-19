@@ -1,10 +1,12 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from admin_app.permission import IsSchoolAdmin
 from admin_app.serializer import AdminProfileSerializer
 from student_app.serializers import StudentProfileCreateSerializer
-from teacher_app.serializers import TeacherProfileCreateSerializer
+from teacher_app.models import TeacherProfile
+from teacher_app.serializers import TeacherProfileCreateSerializer, TeacherProfileDetailSerializer
 
 
 # Create your views here.
@@ -73,3 +75,24 @@ class CreateBulkStudent(APIView):
             response["errors"] = errors
 
         return Response(response, status=status.HTTP_207_MULTI_STATUS if errors else status.HTTP_201_CREATED)
+
+
+class GetTeacherByUsername(generics.RetrieveAPIView):
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = TeacherProfileDetailSerializer
+    lookup_field = 'User__username'
+
+    def get(self, request, username, *args, **kwargs):
+        teacher = get_object_or_404(TeacherProfile, user__username=username)
+        serializer = self.get_serializer(teacher, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class GetAllTeachers(generics.ListAPIView):
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = TeacherProfileDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        teachers = TeacherProfile.objects.all()
+        serializer = self.get_serializer(teachers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

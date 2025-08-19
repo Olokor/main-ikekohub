@@ -66,3 +66,4 @@ class StudentProfileCreateSerializer(serializers.ModelSerializer):
             'academic_year': validated_data['academic_year'],
             'parent_username': student_profile.parents.first().user.username if student_profile.parents.exists() else None
         }
+
