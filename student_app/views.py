@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from admin_app.permission import IsSchoolAdmin
 from student_app.permission import IsStudent
-from student_app.serializers import StudentProfileCreateSerializer
+from student_app.serializers import StudentProfileSerializer
 from rest_framework.response import Response
 from rest_framework import generics, status
 

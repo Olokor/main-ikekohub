@@ -47,3 +47,12 @@ class TeacherProfileCreateSerializer(serializers.ModelSerializer):
             'email': user.email,
             'school': validated_data['school']
         }
+
+class TeacherProfileDetailSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    email = serializers.EmailField(source='user.email')
+    school = serializers.CharField(source='user.school.name')
+
+    class Meta:
+        model = TeacherProfile
+        fields = ['id', 'username', 'email', 'school']
