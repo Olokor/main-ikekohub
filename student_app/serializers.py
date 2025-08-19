@@ -4,7 +4,7 @@ from public_app.models import TenantUser, School
 from student_app.models import StudentProfile
 
 
-class StudentProfileCreateSerializer(serializers.ModelSerializer):
+class StudentProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True, required=True)
     first_name = serializers.CharField(write_only=True, required=True)
     last_name = serializers.CharField(write_only=True, required=True)

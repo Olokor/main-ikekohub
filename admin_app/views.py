@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from admin_app.permission import IsSchoolAdmin
 from admin_app.serializer import AdminProfileSerializer
-from student_app.serializers import StudentProfileCreateSerializer
+from student_app.models import StudentProfile
+from student_app.serializers import StudentProfileSerializer
 from teacher_app.models import TeacherProfile
 from teacher_app.serializers import TeacherProfileCreateSerializer, TeacherProfileDetailSerializer
 
@@ -32,7 +33,7 @@ class CreateTeacherView(generics.CreateAPIView):
 
 class CreateStudentView(generics.CreateAPIView):
     permission_classes = [IsSchoolAdmin]
-    serializer_class = StudentProfileCreateSerializer
+    serializer_class = StudentProfileSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -58,7 +59,7 @@ class CreateBulkStudent(APIView):
         errors = []
 
         for index, student_data in enumerate(students_data):
-            serializer = StudentProfileCreateSerializer(data=student_data)
+            serializer = StudentProfileSerializer(data=student_data)
             if serializer.is_valid():
                 student_result = serializer.save()
                 results.append(student_result)
@@ -96,3 +97,21 @@ class GetAllTeachers(generics.ListAPIView):
         serializer = self.get_serializer(teachers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class GetStudentByAdmissionNumber(generics.RetrieveAPIView):
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = StudentProfileSerializer
+
+    def get(self, request, admission_number, *args, **kwargs):
+        student = get_object_or_404(StudentProfile, admission_number=admission_number)
+        serializer = self.get_serializer(student, many=False)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetAllStudents(generics.ListAPIView):
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = StudentProfileSerializer
+
+    def get(self, request, *args, **kwargs):
+        students = StudentProfile.objects.all()
+        serializer = self.get_serializer(students, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
