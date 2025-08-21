@@ -261,7 +261,8 @@ Authorization: Bearer <your_jwt_token>
 | GET | `/get-all-teachers` | List all teachers | Admin |
 | GET | `/get-student/<admission_number>` | Get student by admission number | Admin |
 | GET | `/get-all-student/` | List all students | Admin |
-
+| PUT/PATCH | `update-student/<int:pk>` | UPDATE STUDENT | Admin |
+| PUT/PATCH | `update-teacher/<int:pk>` | UPDATE TEACHER | Admin |
 #### Teacher Endpoints (`/api-tenant/teacher/`)
 | Method | Endpoint | Description | Permission |
 |--------|----------|-------------|------------|
