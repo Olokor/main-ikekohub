@@ -5,9 +5,11 @@ from rest_framework.views import APIView
 from admin_app.permission import IsSchoolAdmin
 from admin_app.serializer import AdminProfileSerializer
 from student_app.models import StudentProfile
-from student_app.serializers import StudentProfileSerializer
+from student_app.serializers import StudentProfileSerializer, StudentProfileUpdateSerializer
 from teacher_app.models import TeacherProfile
-from teacher_app.serializers import TeacherProfileCreateSerializer, TeacherProfileDetailSerializer
+from teacher_app.permission import IsTeacher
+from teacher_app.serializers import TeacherProfileCreateSerializer, TeacherProfileDetailSerializer, \
+    TeacherProfileUpdateSerializer
 
 
 # Create your views here.
@@ -115,3 +117,13 @@ class GetAllStudents(generics.ListAPIView):
         students = StudentProfile.objects.all()
         serializer = self.get_serializer(students, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UpdateStudentCredential(generics.UpdateAPIView):
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = StudentProfileUpdateSerializer
+    queryset = StudentProfile.objects.all()
+
+class UpdateTeacherCredential(generics.UpdateAPIView):
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = TeacherProfileUpdateSerializer
+    queryset = TeacherProfile.objects.all()

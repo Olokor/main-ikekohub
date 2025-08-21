@@ -9,4 +9,6 @@ urlpatterns = [
     path('get-all-teachers', views.GetAllTeachers.as_view(), name='get-all-teachers'),
     path('get-student/<str:admission_number>', views.GetStudentByAdmissionNumber.as_view(), name='get-student'),
     path('get-all-student/', views.GetAllStudents.as_view(), name='get-all-students'),
+    path('update-student/<int:pk>', views.UpdateStudentCredential.as_view(), name='update-student'),
+    path('update-teacher/<int:pk>', views.UpdateTeacherCredential.as_view(), name='update-teacher'),
 ]
