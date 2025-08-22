@@ -1,5 +1,6 @@
 from django.urls import include, path
 from . import views
+from rest_framework import generics
 urlpatterns = [
     path('create-admin/', views.CreateAdminUser.as_view(), name='create-admin'),
     path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
@@ -11,4 +12,6 @@ urlpatterns = [
     path('get-all-student/', views.GetAllStudents.as_view(), name='get-all-students'),
     path('update-student/<int:pk>', views.UpdateStudentCredential.as_view(), name='update-student'),
     path('update-teacher/<int:pk>', views.UpdateTeacherCredential.as_view(), name='update-teacher'),
+    path('delete-student/<int:pk>', views.DeleteStudentCredential.as_view(), name='delete-student'),
+    path('delete-teacher/<int:pk>', views.DeleteTeacherCredential.as_view(), name='delete-teacher'),
 ]

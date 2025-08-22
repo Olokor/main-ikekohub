@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from parent_app.models import ParentProfile
@@ -47,3 +47,20 @@ def handle_parent_creation(sender, instance, created, **kwargs):
 
     except Exception as e:
         print(f"Error in parent creation signal: {e}")
+
+
+
+
+@receiver(post_delete, sender=StudentProfile)
+def delete_user_with_student(sender, instance, **kwargs):
+    if instance.user:
+        instance.user.delete()
+
+
+@receiver(post_delete, sender=StudentProfile)
+def delete_parent_if_no_children(sender, instance, **kwargs):
+    parents = instance.parents.all()
+    for parent in parents:
+        if parent.children.count() == 0:
+            parent.user.delete()
+

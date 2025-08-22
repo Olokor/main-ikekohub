@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from admin_app.permission import IsSchoolAdmin
+from admin_app.permission import IsSchoolAdmin, AnyOf
 from admin_app.serializer import AdminProfileSerializer
 from student_app.models import StudentProfile
 from student_app.serializers import StudentProfileSerializer, StudentProfileUpdateSerializer
@@ -34,7 +34,7 @@ class CreateTeacherView(generics.CreateAPIView):
         return Response(teacher_data, status=status.HTTP_201_CREATED)
 
 class CreateStudentView(generics.CreateAPIView):
-    permission_classes = [IsSchoolAdmin]
+    permission_classes = [AnyOf(IsSchoolAdmin, IsTeacher)]
     serializer_class = StudentProfileSerializer
 
     def create(self, request, *args, **kwargs):
@@ -119,7 +119,7 @@ class GetAllStudents(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UpdateStudentCredential(generics.UpdateAPIView):
-    permission_classes = [IsSchoolAdmin]
+    permission_classes = [AnyOf(IsSchoolAdmin, IsTeacher)]
     serializer_class = StudentProfileUpdateSerializer
     queryset = StudentProfile.objects.all()
 
@@ -127,3 +127,15 @@ class UpdateTeacherCredential(generics.UpdateAPIView):
     permission_classes = [IsSchoolAdmin]
     serializer_class = TeacherProfileUpdateSerializer
     queryset = TeacherProfile.objects.all()
+
+
+class DeleteStudentCredential(generics.DestroyAPIView):
+    permission_classes = [AnyOf(IsSchoolAdmin, IsTeacher)]
+    queryset = StudentProfile.objects.all()
+    serializer_class = StudentProfileSerializer
+
+
+class DeleteTeacherCredential(generics.DestroyAPIView):
+    permission_classes = [IsSchoolAdmin]
+    queryset = TeacherProfile.objects.all()
+    serializer_class = TeacherProfileDetailSerializer
