@@ -35,3 +35,17 @@ class IsSchoolAdmin(BasePermission):
         if hasattr(obj, 'school'):
             return request.user.school == obj.school
         return True
+
+
+
+def AnyOf(*perms):
+    class _AnyOf(BasePermission):
+        def has_permission(self, request, view):
+            return any(perm().has_permission(request, view) for perm in perms)
+
+        def has_object_permission(self, request, view, obj):
+            return any(perm().has_object_permission(request, view, obj) for perm in perms if
+                       hasattr(perm, 'has_object_permission'))
+
+    return _AnyOf
+
