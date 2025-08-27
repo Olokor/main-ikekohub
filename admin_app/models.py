@@ -16,4 +16,15 @@ class AdminProfile(models.Model):
     def __str__(self):
         return f"{self.role}"
 
+class ClassLevel(models.Model):
+    name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f"{self.name}"
+
+
+class Subject(models.Model):
+    name = models.CharField(max_length=100)
+    score = models.IntegerField(default=0)
+    def __str__(self):
+        return f"{self.name}"
