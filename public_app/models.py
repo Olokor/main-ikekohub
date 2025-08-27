@@ -7,12 +7,12 @@ from django_tenants.models import DomainMixin, TenantMixin
 # Create your models here.
 
 class School(TenantMixin):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    admin_email = models.EmailField(blank=True)
-    admin_first_name = models.CharField(max_length=30,blank=True)
-    admin_last_name = models.CharField(max_length=30, blank=True)
+    admin_email = models.EmailField()
+    admin_first_name = models.CharField(max_length=30)
+    admin_last_name = models.CharField(max_length=30)
 
     auto_create_schema = True
 
@@ -36,11 +36,11 @@ class School(TenantMixin):
                 last_name=self.admin_last_name,
                 is_active=True,
                 is_staff=True,
+                password=make_password('Default_password12345!'),
                 school=self,
             )
 
-            # Set password (you might want to generate a random one and email it)
-            admin_user.password = make_password('Default_password12345!')
+
             admin_user.save()
 
             # Create the admin profile and role
