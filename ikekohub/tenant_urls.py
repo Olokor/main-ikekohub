@@ -24,6 +24,7 @@ urlpatterns = [
     path('api-tenant/teacher/', include('teacher_app.urls')),
     path('api-tenant/student/', include('student_app.urls')),
     path('api-tenant/parent/', include('parent_app.urls')),
+    path('api-tenant/report/', include('report_module.urls')),
     path('api-tenant/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api-tenant/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/tenant/', schema_view.with_ui('swagger', cache_timeout=0), name='tenant-schema-swagger'),

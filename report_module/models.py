@@ -1,10 +1,8 @@
-# reporting_app/models.py
+# report_module/models.py
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from public_app.models import TenantUser
-from student_app.models import StudentProfile
-from teacher_app.models import TeacherProfile
 
 
 class Subject(models.Model):
@@ -49,13 +47,15 @@ class Attendance(models.Model):
         LATE = 'late', 'Late'
         EXCUSED = 'excused', 'Excused'
 
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='attendance_records')
+    # Use string reference to avoid circular import
+    student = models.ForeignKey('student_app.StudentProfile', on_delete=models.CASCADE, related_name='attendance_records')
     date = models.DateField()
     status = models.CharField(max_length=10, choices=AttendanceStatus.choices, default=AttendanceStatus.PRESENT)
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
     notes = models.TextField(blank=True, help_text="Additional notes about attendance")
-    recorded_by = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)
+    # Use string reference to avoid circular import
+    recorded_by = models.ForeignKey('teacher_app.TeacherProfile', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -72,8 +72,9 @@ class Attendance(models.Model):
 
 class DailyReport(models.Model):
     """Daily reports sent by teachers to parents"""
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='daily_reports')
-    teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE, related_name='daily_reports_created')
+    # Use string references to avoid circular imports
+    student = models.ForeignKey('student_app.StudentProfile', on_delete=models.CASCADE, related_name='daily_reports')
+    teacher = models.ForeignKey('teacher_app.TeacherProfile', on_delete=models.CASCADE, related_name='daily_reports_created')
     date = models.DateField()
     class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
 
@@ -152,8 +153,9 @@ class DailySubjectReport(models.Model):
 
 class WeeklyReport(models.Model):
     """Weekly summary reports"""
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='weekly_reports')
-    teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE, related_name='weekly_reports_created')
+    # Use string references to avoid circular imports
+    student = models.ForeignKey('student_app.StudentProfile', on_delete=models.CASCADE, related_name='weekly_reports')
+    teacher = models.ForeignKey('teacher_app.TeacherProfile', on_delete=models.CASCADE, related_name='weekly_reports_created')
     week_start_date = models.DateField()
     week_end_date = models.DateField()
     class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
@@ -225,8 +227,9 @@ class TermReport(models.Model):
         SECOND = 'second', 'Second Term'
         THIRD = 'third', 'Third Term'
 
-    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='term_reports')
-    teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE, related_name='term_reports_created')
+    # Use string references to avoid circular imports
+    student = models.ForeignKey('student_app.StudentProfile', on_delete=models.CASCADE, related_name='term_reports')
+    teacher = models.ForeignKey('teacher_app.TeacherProfile', on_delete=models.CASCADE, related_name='term_reports_created')
     academic_year = models.CharField(max_length=20, help_text="e.g., 2024-2025")
     term = models.CharField(max_length=10, choices=TermChoices.choices)
     class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE)
