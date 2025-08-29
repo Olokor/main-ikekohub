@@ -54,7 +54,7 @@ SHARED_APPS = [
 
     "drf_yasg",
 ]
-TENANT_APPS = ['student_app', 'teacher_app', 'admin_app', 'parent_app']
+TENANT_APPS = ['student_app', 'teacher_app', 'admin_app', 'parent_app', 'report_module']
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
