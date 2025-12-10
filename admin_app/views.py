@@ -11,6 +11,8 @@ from teacher_app.permission import IsTeacher
 from teacher_app.serializers import TeacherProfileCreateSerializer, TeacherProfileDetailSerializer, \
     TeacherProfileUpdateSerializer
 
+# Import ClassLevelSerializer from report_module
+from report_module.serializer import ClassLevelSerializer
 
 # Create your views here.
 class CreateAdminUser(generics.CreateAPIView):
@@ -139,3 +141,25 @@ class DeleteTeacherCredential(generics.DestroyAPIView):
     permission_classes = [IsSchoolAdmin]
     queryset = TeacherProfile.objects.all()
     serializer_class = TeacherProfileDetailSerializer
+
+
+class GetAllClasses(generics.ListAPIView):
+    """
+    Get all classes (ClassLevel) in the system.
+    Only accessible by school administrators.
+    """
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = ClassLevelSerializer
+    
+    def get_queryset(self):
+        # Import ClassLevel from report_module
+        from report_module.models import ClassLevel
+        return ClassLevel.objects.all().order_by('name')
+        
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'count': queryset.count(),
+            'classes': serializer.data
+        }, status=status.HTTP_200_OK)

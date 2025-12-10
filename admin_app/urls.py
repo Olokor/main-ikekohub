@@ -10,6 +10,7 @@ urlpatterns = [
     path('get-all-teachers', views.GetAllTeachers.as_view(), name='get-all-teachers'),
     path('get-student/<str:admission_number>', views.GetStudentByAdmissionNumber.as_view(), name='get-student'),
     path('get-all-students/', views.GetAllStudents.as_view(), name='get-all-students'),
+    path('get-all-classes/', views.GetAllClasses.as_view(), name='get-all-classes'),
     path('update-student/<int:pk>', views.UpdateStudentCredential.as_view(), name='update-student'),
     path('update-teacher/<int:pk>', views.UpdateTeacherCredential.as_view(), name='update-teacher'),
     path('delete-student/<int:pk>', views.DeleteStudentCredential.as_view(), name='delete-student'),
