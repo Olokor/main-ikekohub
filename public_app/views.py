@@ -15,7 +15,7 @@ class CreateSchoolView(generics.CreateAPIView):
         serializer = SchoolSerializer(data=request.data)
         if serializer.is_valid():
             school = serializer.save()
-            domain = Domain.objects.create(domain=f"{remove_space(school.name)}.localhost", is_primary=True, tenant=school)
+            domain = Domain.objects.create(domain=f"{remove_space(school.school_accronym.lower())}.localhost", is_primary=True, tenant=school)
             domain.save()
             domain_serializer = SchoolDomainSerializer(domain)
             school_serializer = SchoolSerializer(school)

@@ -9,7 +9,7 @@ from django_tenants.models import DomainMixin, TenantMixin
 class School(TenantMixin):
     name = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    school_accronym = models.CharField(max_length=7, default="")
     admin_email = models.EmailField()
     admin_first_name = models.CharField(max_length=30)
     admin_last_name = models.CharField(max_length=30)
