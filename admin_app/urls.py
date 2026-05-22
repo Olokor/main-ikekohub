@@ -6,6 +6,7 @@ urlpatterns = [
     path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
     path('create-student/', views.CreateStudentView.as_view(), name='create-student'),
     path('create-students/', views.CreateBulkStudent.as_view(), name='create-students'),
+    path('create-class/', views.CreateClassLevelView.as_view(), name='create-class'),
     path('get-teacher/<str:username>', views.GetTeacherByUsername.as_view(), name='get-teacher'),
     path('get-all-teachers', views.GetAllTeachers.as_view(), name='get-all-teachers'),
     path('get-student/<str:admission_number>', views.GetStudentByAdmissionNumber.as_view(), name='get-student'),

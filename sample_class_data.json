@@ -1,0 +1,9 @@
+{
+  "name": "Grade 10 Science",
+  "academic_year": "2024/2025",
+  "code": "G10-SCI",
+  "age_range": "14-16 years",
+  "department_id": 1,
+  "is_toddler": false,
+  "subject_ids": [1, 2, 3, 4, 5]
+}

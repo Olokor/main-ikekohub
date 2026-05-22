@@ -57,10 +57,57 @@ class ClassLevelSerializer(serializers.ModelSerializer):
     subjects = SubjectSerializer(many=True, read_only=True)
     subject_count = serializers.IntegerField(source='subjects.count', read_only=True)
     department_name = serializers.CharField(source='department.name', read_only=True)
+    
+    # Write-only fields for creating/updating class levels
+    subject_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Subject.objects.all(),
+        many=True,
+        write_only=True,
+        required=False,
+        help_text="List of subject IDs to associate with this class level"
+    )
+    department_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all(),
+        write_only=True,
+        required=False,
+        help_text="Department ID for this class level"
+    )
 
     class Meta:
         model = ClassLevel
         fields = '__all__'
+    
+    def create(self, validated_data):
+        subject_ids = validated_data.pop('subject_ids', [])
+        department_id = validated_data.pop('department_id', None)
+        
+        # Set department if provided
+        if department_id:
+            validated_data['department'] = department_id
+        
+        class_level = super().create(validated_data)
+        
+        # Set subjects if provided
+        if subject_ids:
+            class_level.subjects.set(subject_ids)
+        
+        return class_level
+    
+    def update(self, instance, validated_data):
+        subject_ids = validated_data.pop('subject_ids', None)
+        department_id = validated_data.pop('department_id', None)
+        
+        # Update department if provided
+        if department_id:
+            instance.department = department_id
+        
+        instance = super().update(instance, validated_data)
+        
+        # Update subjects if provided
+        if subject_ids is not None:
+            instance.subjects.set(subject_ids)
+        
+        return instance
 
 
 # ========== ATTENDANCE SERIALIZERS ==========

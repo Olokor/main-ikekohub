@@ -13,6 +13,7 @@ from teacher_app.serializers import TeacherProfileCreateSerializer, TeacherProfi
 
 # Import ClassLevelSerializer from report_module
 from report_module.serializer import ClassLevelSerializer
+from report_module.models import ClassLevel
 
 # Create your views here.
 class CreateAdminUser(generics.CreateAPIView):
@@ -153,7 +154,6 @@ class GetAllClasses(generics.ListAPIView):
     
     def get_queryset(self):
         # Import ClassLevel from report_module
-        from report_module.models import ClassLevel
         return ClassLevel.objects.all().order_by('name')
         
     def list(self, request, *args, **kwargs):
@@ -163,3 +163,21 @@ class GetAllClasses(generics.ListAPIView):
             'count': queryset.count(),
             'classes': serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class CreateClassLevelView(generics.CreateAPIView):
+    """
+    Create a new class level.
+    Only accessible by school administrators.
+    """
+    permission_classes = [IsSchoolAdmin]
+    serializer_class = ClassLevelSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        class_level = serializer.save()
+        return Response({
+            'message': 'Class level created successfully',
+            'class_level': ClassLevelSerializer(class_level).data
+        }, status=status.HTTP_201_CREATED)
